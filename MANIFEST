@@ -1,0 +1,11 @@
+Changes
+lib/File/Fcntl_Lock.pm
+Fcntl_Lock.xs
+Makefile.PL
+MANIFEST
+MANIFEST.SKIP
+README
+t/Fcntl_Lock.t
+sizes1.c
+sizes2.c
+META.yml                                 Module meta-data (added by MakeMaker)
