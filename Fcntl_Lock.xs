@@ -4,7 +4,7 @@
 
   Copyright (C) 2002-2007 Jens Thoms Toerring <jt@toerring.de>
 
-  $Id: Fcntl_Lock.xs 8066 2007-08-05 20:38:24Z jens $
+  $Id: Fcntl_Lock.xs 8074 2007-08-12 20:09:35Z jens $
 */
 
 
@@ -58,19 +58,15 @@ C_fcntl_lock( fd, function, flock_hash, int_err )
             case F_SETLKW :
                 function = REAL_F_SETLKW;
                 break;
-
-            default :
-                sv_setiv( int_err, 1 );
-                XSRETURN_UNDEF;
         }
 
         /* Let's be careful and not assume that anything at all will work as
            expected (otherwise we could merge this with the following) */
 
-        if ( ( sv_type   = hv_fetch( fs, "l_type",   6, 0 ) ) == NULL ||
-             ( sv_whence = hv_fetch( fs, "l_whence", 8, 0 ) ) == NULL ||
-             ( sv_start  = hv_fetch( fs, "l_start",  7, 0 ) ) == NULL ||
-             ( sv_len    = hv_fetch( fs, "l_len",    5, 0 ) ) == NULL    )
+        if (    ( sv_type   = hv_fetch( fs, "l_type",   6, 0 ) ) == NULL
+             || ( sv_whence = hv_fetch( fs, "l_whence", 8, 0 ) ) == NULL
+             || ( sv_start  = hv_fetch( fs, "l_start",  7, 0 ) ) == NULL
+             || ( sv_len    = hv_fetch( fs, "l_len",    5, 0 ) ) == NULL )
         {
             sv_setiv( int_err, 1 );
             XSRETURN_UNDEF;

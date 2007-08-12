@@ -3,14 +3,14 @@
 #
 # Copyright (C) 2002-2007 Jens Thoms Toerring <jt@toerring.de>
 #
-# $Id: Makefile.PL 8071 2007-08-05 21:06:18Z jens $
+# $Id: Makefile.PL 8074 2007-08-12 20:09:35Z jens $
 
 
 use ExtUtils::MakeMaker;
 use Config;
 
 
-# Check if there's a C compiler that we can use.
+# Check if there's a C compiler we can use.
 
 open $fh, '>cc_test.c' or die "Failed to open a file for writing: $!\n";
 print $fh "int main(void)\n{\nreturn 0;\n}\n";
@@ -33,12 +33,13 @@ print $fh <<EOF;
 #include <stdlib.h>
 #include <fcntl.h>
 int main( void ) {
+	int fd = fileno( fopen( "./fcntl_test.c", "r" ) );
     struct flock f;
     f.l_type = F_RDLCK;
     f.l_whence = SEEK_SET;
     f.l_start = 0;
     f.l_len = 0;
-    return fcntl( 0, F_SETLK, &f ) != -1 ? EXIT_SUCCESS : EXIT_FAILURE;
+    return fcntl( fd, F_SETLK, &f ) != -1 ? EXIT_SUCCESS : EXIT_FAILURE;
 }
 EOF
 close $fh;
@@ -56,12 +57,14 @@ unlink 'fcntl_test.c';
 # a version that also tries 'long long', then one that only uses 'long'
 # since 'long long' may not exist on all systems).
 
-if ( ( system $Config{cc}, qw( -o sizes1 sizes1.c ) or system './sizes1' ) and
-     ( system $Config{cc}, qw( -o sizes2 sizes2.c ) or system './sizes2' ) ) {
+if (     (    system $Config{cc}, qw( -o sizes1 sizes1.c )
+		   or system './sizes1' ) 
+     and (    system $Config{cc}, qw( -o sizes2 sizes2.c )
+		   or system './sizes2' ) ) {
     unlink 'sizes1' if -e 'sizes1';
     unlink 'sizes2' if -e 'sizes2';
 	unlink 'Fnctl_Lock.h' if -e 'Fnctl_Lock.h';
-    die "Failed to create the necessary header file.\n";
+    die "Failed to create the required header file.\n";
 }
 unlink 'sizes1' if -e 'sizes1';
 unlink 'sizes2' if -e 'sizes2';
